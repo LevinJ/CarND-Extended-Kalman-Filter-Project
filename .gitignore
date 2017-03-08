@@ -3,6 +3,10 @@
 
 # build files
 build/
+.project
+.cproject
+.settings
+
 
 # editor config
 .vscode/
