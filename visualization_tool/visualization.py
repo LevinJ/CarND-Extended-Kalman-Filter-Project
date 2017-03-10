@@ -43,6 +43,7 @@ trace3 = Scatter(
 )
 
 data = [trace1, trace2, trace3]
+# data = [trace3]
 
 layout = Layout(
     xaxis2=dict(
@@ -58,5 +59,5 @@ layout = Layout(
 )
 
 fig = Figure(data=data, layout=layout)
-py.plot(fig, filename= 'EKF')
+py.plot(fig, filename= 'EKF.html')
 
