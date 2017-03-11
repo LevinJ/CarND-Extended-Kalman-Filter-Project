@@ -69,6 +69,11 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
 			py = ro * sin(phi);
 			vx = ro_dot * cos(phi);
 			vy = ro_dot * sin(phi);
+			//state covariance matrix P initialization
+			ekf_.P_ << 1, 0, 0, 0,
+					0, 1, 0, 0,
+					0, 0, 2, 0,
+					0, 0, 0, 2;
 
 		}
 		else if (measurement_pack.sensor_type_ == MeasurementPackage::LASER) {
@@ -77,15 +82,14 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
 			 */
 			px = measurement_pack.raw_measurements_[0];
 			py = measurement_pack.raw_measurements_[1];
+			//state covariance matrix P initialization
+			ekf_.P_ << 1, 0, 0, 0,
+					0, 1, 0, 0,
+					0, 0, 1000, 0,
+					0, 0, 0, 1000;
 		}
 		previous_timestamp_ = measurement_pack.timestamp_;
 		ekf_.x_ << px, py, vx, vy;
-
-		//state covariance matrix P initialization
-		ekf_.P_ << 1, 0, 0, 0,
-				0, 1, 0, 0,
-				0, 0, 1000, 0,
-				0, 0, 0, 1000;
 
 		// done initializing, no need to predict or update
 		is_initialized_ = true;
@@ -147,8 +151,8 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
 		ekf_.H_ = Hj_;
 	} else {
 		// Laser updates
-		R_laser_ << 0.0225, 0,
-				0, 0.0225;
+		R_laser_ << 0.0001, 0,
+				0, 0.0001;
 		H_laser_<< 1, 0, 0, 0,
 				0, 1, 0, 0;
 
