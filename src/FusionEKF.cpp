@@ -141,9 +141,9 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
 
 	if (measurement_pack.sensor_type_ == MeasurementPackage::RADAR) {
 		// Radar updates
-		R_radar_ << 0.0225, 0, 0,
-				0, 0.0225,0,
-				0,0,0.0225;
+		R_radar_ << 0.01, 0, 0,
+				0, 0.000001,0,
+				0,0,0.01;
 		Tools tools;
 		Hj_ = tools.CalculateJacobian(ekf_.x_);
 
