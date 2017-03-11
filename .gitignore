@@ -14,3 +14,4 @@ build/
 .pydevproject
 sample-laser-radar-measurement-data-1_output.txt
 EKF.html
+*.csv
