@@ -11,21 +11,25 @@ import math
 
 class PlotData(object):
     def __init__(self):
-        self.previous_timestamp = 0
+       
         return
     def __load_input_data(self,kalman_input_file):
         
+        print('processing {}.....'.format(kalman_input_file))
+        self.previous_timestamp = None
+        self.previous_vx = None
+        self.previous_vy = None
         
-        self.previous_timestamp = 0
         entries = []
         cols = ['type_meas', 'px_meas','py_meas','vx_meas','vy_meas','timestampe','delta_time','px_gt','py_gt','vx_gt','vy_gt',
-                'rho_meas','phi_meas','rho_dot_meas', 'rho_gt','phi_gt','rho_dot_gt']
+                'rho_meas','phi_meas','rho_dot_meas', 'rho_gt','phi_gt','rho_dot_gt','ax','ay']
         with open(kalman_input_file, "r") as ins:
             for line in ins:
                 entries.append(self.__process_line(line))
         df = pd.DataFrame(entries, columns=cols)
-#         df.to_csv('input_data.csv')
-        print('csv saved')
+        csv_file_name = os.path.dirname(kalman_input_file) + '/preprocess/' + os.path.basename(kalman_input_file)[:-4] +'.csv'
+        df.to_csv(csv_file_name)
+        print(csv_file_name + ' saved')
         return df
     def __cal_input_rmse(self,df):
         lidar_df = df[df['type_meas'] == 'L']
@@ -34,9 +38,10 @@ class PlotData(object):
         print('radar only: {}'.format(self.__cal_rmse(radar_df)))
         print('all data: {}'.format(self.__cal_rmse(df)))
         
-        print("lidar variance {}, {}".format(np.var(lidar_df['px_meas'] - lidar_df['px_gt']), np.var(lidar_df['py_meas'] - lidar_df['py_gt'])))
-        print("radar variance {}, {}, {}".format(np.var(radar_df['rho_meas'] - radar_df['rho_gt']), np.var(radar_df['phi_meas'] - radar_df['phi_gt']),
+        print("lidar measurement noise {}, {}".format(np.var(lidar_df['px_meas'] - lidar_df['px_gt']), np.var(lidar_df['py_meas'] - lidar_df['py_gt'])))
+        print("radar measurement noise {}, {}, {}".format(np.var(radar_df['rho_meas'] - radar_df['rho_gt']), np.var(radar_df['phi_meas'] - radar_df['phi_gt']),
                                                  np.var(radar_df['rho_dot_meas'] - radar_df['rho_dot_gt'])))
+        print("motion noise {}, {}".format(np.var(df[df['ax']!=0]['ax']), np.var(df[df['ay']!=0]['ay'])))
         
         return
     def __cal_rmse(self, df):
@@ -91,32 +96,63 @@ class PlotData(object):
             vy_meas = rho_dot_meas * math.sin(phi_meas)
             
             rho_gt = math.sqrt(px_gt ** 2 + py_gt ** 2)
-            phi_gt = math.atan(py_gt/px_gt)
-            rho_dot_gt = (px_gt * vx_gt + py_gt * vy_gt) / rho_gt
+            if px_gt != 0:
+                phi_gt = math.atan(py_gt/px_gt)
+            else:
+                print('px_gt is zero')
+            
+            if rho_gt != 0:
+                rho_dot_gt = (px_gt * vx_gt + py_gt * vy_gt) / rho_gt
+            else:
+                print('rho_gt is zero')
         else:
             raise("unexpected line" + line)
         
         delta_time = 0
-        if self.previous_timestamp != 0:
+        ax = 0
+        ay = 0
+        if self.previous_timestamp is not None:
             delta_time = (timestampe - self.previous_timestamp)/1000000.0
         
+        if delta_time != 0:    
+            if self.previous_vx is not None:
+                ax = (vx_gt - self.previous_vx)/ delta_time
+            if self.previous_vy is not None:
+                ay = (vy_gt - self.previous_vy)/ delta_time
+            
+        
         self.previous_timestamp = timestampe
+        self.previous_vx = vx_gt
+        self.previous_vy = vy_gt
             
         
         return type_meas, px_meas,py_meas,vx_meas,vy_meas,timestampe,delta_time, px_gt,py_gt,vx_gt,vy_gt,\
-            rho_meas,phi_meas,rho_dot_meas, rho_gt,phi_gt,rho_dot_gt
+            rho_meas,phi_meas,rho_dot_meas, rho_gt,phi_gt,rho_dot_gt,ax,ay
     def visulize_data(self,df):
         plt.scatter(df['px_gt'], df['py_gt'],marker='*', color='blue')
         plt.scatter(df['px_meas'], df['py_meas'],marker='v',color='red')
         plt.show()
         return
-   
-        
-    def run(self):
+    def run_data_1(self):
+        print('####data sample 1###')
         kalman_input_file = r'../data/sample-laser-radar-measurement-data-1.txt'
         df = self.__load_input_data(kalman_input_file)
         self.__cal_input_rmse(df)
-        self.visulize_data(df)
+        return df
+    def run_data_2(self):
+        print('####data sample 2###')
+        kalman_input_file = r'../data/sample-laser-radar-measurement-data-2.txt'
+        df = self.__load_input_data(kalman_input_file)
+        self.__cal_input_rmse(df)
+        return df
+    
+   
+        
+    def run(self):
+        self.run_data_1()
+        self.run_data_2()
+        
+#         self.visulize_data(df)
 
         return
 
