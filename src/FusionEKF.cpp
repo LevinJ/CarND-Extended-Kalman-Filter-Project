@@ -149,6 +149,9 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
 
 		ekf_.R_ = R_radar_;
 		ekf_.H_ = Hj_;
+		//Call the Kalman Filter update() function
+		// with the most recent raw measurements_
+		ekf_.UpdateEKF(measurement_pack.raw_measurements_);
 	} else {
 		// Laser updates
 		R_laser_ << 0.0001, 0,
@@ -158,12 +161,11 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
 
 		ekf_.R_ = R_laser_;
 		ekf_.H_ = H_laser_;
+		//Call the Kalman Filter update() function
+		// with the most recent raw measurements_
+		ekf_.Update(measurement_pack.raw_measurements_);
 	}
 
-
-	//Call the Kalman Filter update() function
-	// with the most recent raw measurements_
-	ekf_.Update(measurement_pack.raw_measurements_);
 
 	// print the output
 	cout << "x_ = " << ekf_.x_ << endl;
