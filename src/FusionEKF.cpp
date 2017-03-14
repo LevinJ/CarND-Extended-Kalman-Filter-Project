@@ -145,7 +145,7 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
 
 	if (measurement_pack.sensor_type_ == MeasurementPackage::RADAR) {
 		// Radar updates
-		R_radar_ << 0.01, 0, 0,
+		R_radar_ << 0.03, 0, 0,
 				0, 0.000001,0,
 				0,0,0.01;
 		Tools tools;
@@ -158,8 +158,8 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
 		ekf_.UpdateEKF(measurement_pack.raw_measurements_);
 	} else {
 		// Laser updates
-		R_laser_ << 0.0001, 0,
-				0, 0.0001;
+		R_laser_ << 0.0225, 0,
+				0, 0.0225;
 		H_laser_<< 1, 0, 0, 0,
 				0, 1, 0, 0;
 
