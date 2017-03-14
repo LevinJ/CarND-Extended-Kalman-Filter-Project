@@ -55,6 +55,8 @@ int main(int argc, char* argv[]) {
 
 	string in_file_name_ = argv[1];
 	ifstream in_file_(in_file_name_.c_str(), ifstream::in);
+	cout << "process file" << in_file_name_ <<  endl;
+
 
 	string out_file_name_ = argv[2];
 	ofstream out_file_(out_file_name_.c_str(), ofstream::out);
@@ -94,9 +96,7 @@ int main(int argc, char* argv[]) {
 			measurement_pack_list.push_back(meas_package);
 		} else if (sensor_type.compare("R") == 0) {
 			// RADAR MEASUREMENT
-			//skip for now
-			continue;
-
+			// continue;
 			// read measurements at this timestamp
 			meas_package.sensor_type_ = MeasurementPackage::RADAR;
 			meas_package.raw_measurements_ = VectorXd(3);
