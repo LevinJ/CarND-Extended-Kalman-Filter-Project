@@ -92,6 +92,10 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
 		ekf_.x_ << px, py, vx, vy;
 
 		// done initializing, no need to predict or update
+		if(px == 0){
+			//will start intialization on records where px is not zero
+			return;
+		}
 		is_initialized_ = true;
 		return;
 	}
@@ -109,7 +113,7 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
 	//compute the time elapsed between the current and previous measurements
 	float dt = (measurement_pack.timestamp_ - previous_timestamp_) / 1000000.0;	//dt - expressed in seconds
 	previous_timestamp_ = measurement_pack.timestamp_;
-	cout << dt << endl;
+//	cout << dt << endl;
 	//acceleration noise components
 	float noise_ax = 5;
 	float noise_ay = 5;
@@ -168,6 +172,6 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
 
 
 	// print the output
-	cout << "x_ = " << ekf_.x_ << endl;
-	cout << "P_ = " << ekf_.P_ << endl;
+//	cout << "x_ = " << ekf_.x_ << endl;
+//	cout << "P_ = " << ekf_.P_ << endl;
 }
