@@ -149,7 +149,15 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
 				0, 0.000001,0,
 				0,0,0.01;
 		Tools tools;
-		Hj_ = tools.CalculateJacobian(ekf_.x_);
+		try{
+			//when px is 0 or px*px + py*py is close to zero, we skip the update part for this radar measure
+			//in order to avoid divide by zero situation
+			Hj_ = tools.CalculateJacobian(ekf_.x_);
+		}catch(StringException & caught){
+			cout<<"Got "<<caught.what()<<std::endl;
+			return;
+		}
+
 
 		ekf_.R_ = R_radar_;
 		ekf_.H_ = Hj_;

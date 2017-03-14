@@ -7,6 +7,15 @@ using Eigen::MatrixXd;
 using Eigen::VectorXd;
 using namespace std;
 
+class StringException : public std::exception
+{
+public:
+   std::string s;
+   StringException(std::string ss) : s(ss) {}
+   ~StringException() throw () {} // Updated
+   const char* what() const throw() { return s.c_str(); }
+};
+
 class Tools {
 public:
   /**
