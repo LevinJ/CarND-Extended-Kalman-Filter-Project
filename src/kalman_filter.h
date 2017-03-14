@@ -62,6 +62,12 @@ public:
   void Update(const VectorXd &z);
 
   /**
+     * Updates the state based on z_pred and z
+     * @param z The measurement at k+1
+     */
+ void Update_ZPredZ(const VectorXd &z_pred, const VectorXd &z);
+
+  /**
    * Updates the state by using Extended Kalman Filter equations
    * @param z The measurement at k+1
    */
