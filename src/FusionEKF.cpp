@@ -93,7 +93,7 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
 
 		// done initializing, no need to predict or update
 		if(px == 0){
-			//will start intialization on records where px is not zero
+			//will start true kalman state initialization till records whose px is not zero arrives
 			return;
 		}
 		is_initialized_ = true;
