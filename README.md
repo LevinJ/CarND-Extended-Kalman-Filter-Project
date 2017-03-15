@@ -8,30 +8,30 @@ The goals / steps of this project are the following:
 
 * Complete the Extended Kalman Filter algorithm in C++.
 * Apply it to pedestrian position/speed estimation problem 
-* Evaluate it again two sampled data, the metrics used is rmse
+* Evaluate it again two sampled data, the metrics used is RMSE
 
 ### Final Result
 
 1. sample data I
 
-![Pedestrian Tracking I](https://github.com/LevinJ/CarND-Advanced-Lane-Lines/blob/master/camera_calibration.png)
+![Pedestrian Tracking I](https://github.com/LevinJ/CarND-Extended-Kalman-Filter-Project/blob/master/pedestrian_tracking_1.png)
 
 
-Accuracy - RMSE:
-0.0269264
- 0.024363
- 0.335339
- 0.370815
+Accuracy - RMSE:  
+0.0269264  
+ 0.024363  
+ 0.335339  
+ 0.370815  
 
 2. sample data II
-![Pedestrian Tracking II](https://github.com/LevinJ/CarND-Advanced-Lane-Lines/blob/master/camera_calibration.png)
+![Pedestrian Tracking II](https://github.com/LevinJ/CarND-Extended-Kalman-Filter-Project/blob/master/pedestrian_tracking_2.png)
 
 
-Accuracy - RMSE:
-0.170502
-0.167365
-0.400714
-0.630331
+Accuracy - RMSE:  
+0.170502  
+0.167365  
+0.400714  
+0.630331  
 
 
 Note that the elements in RMSE vector corresponds to [px, py, vx, vy]
