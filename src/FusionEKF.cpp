@@ -72,8 +72,8 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
 			//state covariance matrix P initialization
 			ekf_.P_ << 1, 0, 0, 0,
 					0, 1, 0, 0,
-					0, 0, 2, 0,
-					0, 0, 0, 2;
+					0, 0, 1000, 0,
+					0, 0, 0, 1000;
 
 		}
 		else if (measurement_pack.sensor_type_ == MeasurementPackage::LASER) {
@@ -115,8 +115,8 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
 	previous_timestamp_ = measurement_pack.timestamp_;
 //	cout << dt << endl;
 	//acceleration noise components
-	float noise_ax = 5;
-	float noise_ay = 5;
+	float noise_ax = 9;
+	float noise_ay = 9;
 	//Modify the F matrix so that the time is integrated
 	ekf_.F_(0,2) = dt;
 	ekf_.F_(1,3) = dt;
@@ -145,9 +145,9 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
 
 	if (measurement_pack.sensor_type_ == MeasurementPackage::RADAR) {
 		// Radar updates
-		R_radar_ << 0.03, 0, 0,
-				0, 0.000001,0,
-				0,0,0.01;
+		R_radar_ << 0.09, 0, 0,
+				0, 0.0009,0,
+				0,0,0.09;
 		Tools tools;
 		try{
 			//when px is 0 or px*px + py*py is close to zero, we skip the update part for this radar measure
