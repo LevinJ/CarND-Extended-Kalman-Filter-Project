@@ -31,6 +31,22 @@ FusionEKF::FusionEKF() {
 			0, 0, 1, 0,
 			0, 0, 0, 1;
 
+  //measurement covariance matrix - laser
+  R_laser_ << 0.0225, 0,
+        0, 0.0225;
+
+  //measurement covariance matrix - radar
+  R_radar_ << 0.09, 0, 0,
+        0, 0.0009, 0,
+        0, 0, 0.09;
+
+  /**
+  TODO:
+    * Finish initializing the FusionEKF.
+    * Set the process and measurement noises
+  */
+
+
 }
 
 /**
@@ -39,11 +55,13 @@ FusionEKF::FusionEKF() {
 FusionEKF::~FusionEKF() {}
 
 void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
-	/*****************************************************************************
-	 *  Initialization
-	 ****************************************************************************/
-	if (!is_initialized_) {
-		/**
+
+
+  /*****************************************************************************
+   *  Initialization
+   ****************************************************************************/
+  if (!is_initialized_) {
+    /**
     TODO:
 		 * Initialize the state ekf_.x_ with the first measurement.
 		 * Create the covariance matrix.
@@ -108,36 +126,17 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
    TODO:
 	 * Update the state transition matrix F according to the new elapsed time.
       - Time is measured in seconds.
-	 * Update the process noise covariance matrix.
-	 */
-	//compute the time elapsed between the current and previous measurements
-	float dt = (measurement_pack.timestamp_ - previous_timestamp_) / 1000000.0;	//dt - expressed in seconds
-	previous_timestamp_ = measurement_pack.timestamp_;
-//	cout << dt << endl;
-	//acceleration noise components
-	float noise_ax = 9;
-	float noise_ay = 9;
-	//Modify the F matrix so that the time is integrated
-	ekf_.F_(0,2) = dt;
-	ekf_.F_(1,3) = dt;
-	//Set the process covariance matrix Q
-	float dt_2 = dt * dt;
-	float dt_3 = dt_2 * dt;
-	float dt_4 = dt_3 * dt;
-	ekf_.Q_ = MatrixXd(4, 4);
-	ekf_.Q_ <<  dt_4/4*noise_ax, 0, dt_3/2*noise_ax, 0,
-			0, dt_4/4*noise_ay, 0, dt_3/2*noise_ay,
-			dt_3/2*noise_ax, 0, dt_2*noise_ax, 0,
-			0, dt_3/2*noise_ay, 0, dt_2*noise_ay;
+     * Update the process noise covariance matrix.
+     * Use noise_ax = 9 and noise_ay = 9 for your Q matrix.
+   */
 
+  ekf_.Predict();
 
-	ekf_.Predict();
+  /*****************************************************************************
+   *  Update
+   ****************************************************************************/
 
-	/*****************************************************************************
-	 *  Update
-	 ****************************************************************************/
-
-	/**
+  /**
    TODO:
 	 * Use the sensor type to perform the update step.
 	 * Update the state and covariance matrices.
