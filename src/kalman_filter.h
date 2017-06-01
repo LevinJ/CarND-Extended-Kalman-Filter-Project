@@ -11,7 +11,7 @@ public:
   // state covariance matrix
   Eigen::MatrixXd P_;
 
-  // state transition matrix
+  // state transistion matrix
   Eigen::MatrixXd F_;
 
   // process covariance matrix
@@ -57,12 +57,6 @@ public:
    * @param z The measurement at k+1
    */
   void Update(const Eigen::VectorXd &z);
-
-  /**
-     * Updates the state based on z_pred and z
-     * @param z The measurement at k+1
-     */
- void Update_ZPredZ(const Eigen::VectorXd &z_pred, const Eigen::VectorXd &z);
 
   /**
    * Updates the state by using Extended Kalman Filter equations
